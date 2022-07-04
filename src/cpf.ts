@@ -1,12 +1,12 @@
 // @ts-nocheck
 export function validate(cpf) {
-  cpf = cpf.replace(/\D/gi, "");
-
   if (!cpf) {
     return false;
   }
 
-  if (cpf.length <= 11 || cpf.length >= 14) {
+  cpf = cpf.replace(/\D/gi, "");
+
+  if (cpf.length !== 11) {
     return false;
   }
 
@@ -14,33 +14,44 @@ export function validate(cpf) {
     return false;
   }
 
-  try {
-    let cpf = '35003897839'
-    let d1 = 0;
-    let d2 = 0;
-    let dg1 = 0;
-    let dg2 = 0;
-    let nDigResult;
+  let soma = 0;
+  let digitoVerificador = parseInt(cpf[9]);
 
-    for (let i = 1; i <= cpf.length; i++) {
-      const digito = parseInt(cpf[i-1]);
-      d1 = d1 + (11 - i) * digito;
-      d2 = d2 + (12 - i) * digito;
-    }
+  for (let i = 1; i < 10; i++) {
+    const digitoCpf = parseInt(cpf[i - 1]);
+    soma = soma + (digitoCpf * (11 - i));
+  }
 
-    let rest = d1 % 11;
-
-    dg1 = rest < 2 ? 0 : 11 - rest;
-    d2 += 2 * dg1;
-    rest = d2 % 11;
-    if (rest < 2) dg2 = 0;
-    else dg2 = 11 - rest;
-
-    let nDigVerific = cpf.substring(cpf.length - 2, cpf.length);
-    nDigResult = "" + dg1 + "" + dg2;
-    return nDigVerific == nDigResult;
-  } catch (e) {
-    console.error("Erro !" + e);
+  if (!validarDigitoVerificador(soma, digitoVerificador)) {
     return false;
   }
+
+  soma = 0;
+
+  for (let i = 1; i < 11; i++) {
+    const digitoCpf = parseInt(cpf[i - 1]);
+    soma = soma + (digitoCpf * (12 - i));
+  }
+
+  digitoVerificador = parseInt(cpf[10]);
+
+  if (!validarDigitoVerificador(soma, digitoVerificador)) {
+    return false;
+  }
+
+  return true;
+}
+
+function validarDigitoVerificador(soma, digito) {
+  let resto = (soma * 10) % 11;
+
+  if (resto === 10 || resto === 11) {
+    resto = 0;
+  }
+
+  if (resto === digito) {
+    return true;
+  }
+
+  return false;
 }
