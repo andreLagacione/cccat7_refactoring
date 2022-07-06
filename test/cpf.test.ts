@@ -1,31 +1,53 @@
-import { validate } from "../src/cpf";
+import Cpf from "../src/cpf";
 
-test('Deve retornar que o CPF é válido', function() {
-    const validateCpf = validate('596.637.610-75');
-    expect(validateCpf).toBeTruthy();
+test('Deve testar um CPF e retornar que o CPF é válido', () => {
+    const cpf = new Cpf('925.454.250-44');
+    expect(cpf.validate()).toBeTruthy();
 });
 
-test('Deve retornar que o CPF é inválido', function() {
-    const validateCpf = validate('647.999.250-44');
-    expect(validateCpf).toBeFalsy();
+test('Deve testar um CPF e retornar que o CPF é inválido', () => {
+    const cpf = new Cpf('925.454.250-45');
+    expect(cpf.validate()).toBeFalsy();
 });
 
-test('Deve validar sem o envio do CPF', function() {
-    const validateCpf = validate('');
-    expect(validateCpf).toBeFalsy();
+test('Deve testar um CPF com o segundo digito inválido e retornar que o CPF é inválido', () => {
+    const cpf = new Cpf('925.454.250-75');
+    expect(cpf.validate()).toBeFalsy();
 });
 
-test('Deve validar CPF com números iguais', function() {
-    const validateCpf = validate('111.111.111.-11');
-    expect(validateCpf).toBeFalsy();
+test('Deve testar um CPF que começa com zero e retornar que o CPF é válido', () => {
+    const cpf = new Cpf('088.703.860-31');
+    expect(cpf.validate()).toBeTruthy();
 });
 
-test('Deve validar CPF com quantidade de caracteres diferente de 11', function() {
-    const validateCpf = validate('350.954.524-554');
-    expect(validateCpf).toBeFalsy();
+test('Deve testar um CPF com quantidade de caractéteres inválida e retornar que o CPF é inválido', () => {
+    const cpf = new Cpf('088.703.860-3');
+    expect(cpf.validate()).toBeFalsy();
 });
 
-test('Deve validar CPF com final zero', function() {
-    const validateCpf = validate('647.999.250-40');
-    expect(validateCpf).toBeFalsy();
+const defaultCpfs = [
+    '111.111.111-11',
+    '222.222.222-22',
+    '333.333.333-33',
+    '444.444.444-44',
+    '555.555.555-55',
+    '666.666.666-66',
+    '777.777.777-77',
+    '888.888.888-88',
+    '999.999.999-99',
+];
+
+test.each(defaultCpfs)('Deve testar um CPFs com todos caractéres iguais e retornar que o CPF é inválido', (value: string) => {
+    const cpf = new Cpf(value);
+    expect(cpf.validate()).toBeFalsy();
+});
+
+test('Deve verificar se o CPF obtido é igual ao CPF enviado', () => {
+    const cpf = new Cpf('088.703.860-3');
+    expect(cpf.getValue()).toEqual('088.703.860-3');
+});
+
+test('Deve testar o resto da divisão da validação do dígito', () => {
+    const cpf = new Cpf('123.456.789-09');
+    expect(cpf.validate()).toBeTruthy();
 });
