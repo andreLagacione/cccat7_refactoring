@@ -1,24 +1,28 @@
 
 export default class Cpf {
   private cpf: string;
+  DIGIT_1_FACTOR = 10;
+	DIGIT_2_FACTOR = 11;
 
-  constructor (cpf: string) {
-    this.cpf = cpf;
+  constructor (value: string) {
+    if (!this.validate(value)) throw new Error('CPF inválido');
+    this.cpf = value;
   }
 
-  validate(): boolean {
-    const cpf = this.normalize();
+  validate(cpf: string): boolean {
+    if (!cpf) return false;
+    cpf = this.normalize(cpf);
     if (cpf.length !== 11) return false;
     if (this.allDigitsAreEquals(cpf)) return false;
-    let validateDigit = this.calculateDigit(cpf, 10);
+    let validateDigit = this.calculateDigit(cpf, this.DIGIT_1_FACTOR);
     if (!this.isDigitValid(validateDigit, parseInt(cpf[9]))) return false;
-    validateDigit = this.calculateDigit(cpf, 11);
+    validateDigit = this.calculateDigit(cpf, this.DIGIT_2_FACTOR);
     if (!this.isDigitValid(validateDigit, parseInt(cpf[10]))) return false;
     return true;
   }
 
-  private normalize(): string {
-    return this.cpf.replace(/\D+/g, '');
+  private normalize(cpf: string): string {
+    return cpf.replace(/\D+/g, '');
   }
 
   private allDigitsAreEquals(cpf: string): boolean {

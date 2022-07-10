@@ -8,8 +8,8 @@ export default class Order {
     cpf: Cpf;
     coupon?: Coupon;
 
-    constructor (cpf: Cpf) {
-        this.cpf = cpf;
+    constructor (cpf: string) {
+        this.cpf = new Cpf(cpf);
         this.items = [];
     }
 
