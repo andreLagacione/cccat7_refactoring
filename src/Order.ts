@@ -7,6 +7,8 @@ export default class Order {
     items: OrderItem[];
     cpf: Cpf;
     coupon?: Coupon;
+    private readonly DISTANCE = 1000;
+    private readonly DENSITY_FACTOR = 100;
 
     constructor (cpf: string) {
         this.cpf = new Cpf(cpf);
@@ -14,7 +16,8 @@ export default class Order {
     }
 
     addItem(product: Product, quantity: number): void {
-        const orderItem = new OrderItem(product.id, product.price, quantity);
+        if (this.checkIfItemWasAdded(product.id)) throw new Error('Este item já foi adicionado');
+        const orderItem = new OrderItem(product, quantity);
         this.items.push(orderItem);
     }
 
@@ -33,5 +36,19 @@ export default class Order {
         }
 
         return total;
+    }
+
+    checkIfItemWasAdded(itemId: string): boolean {
+        return !!this.items.filter(item => item.product.id === itemId).length;
+    }
+
+    calculateFreight(): string {
+        let total = this.items.reduce((total, item) => {
+            total += this.DISTANCE * item.product.volumn.getVolumn() * (item.product.getDensity() / this.DENSITY_FACTOR);
+            return total;
+        }, 0);
+
+        total = total < 10 ? 10 : total;
+        return total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).replace(/\s/g, '');
     }
 }
