@@ -13,7 +13,7 @@ export default class Coupon {
 
     isCouponExpired(expirationDate: Date) {
         const now = new Date().getTime();
-        const expirationDateTime = new Date(expirationDate).getTime();
+        const expirationDateTime = expirationDate.getTime();
         return now < expirationDateTime;
     }
 }

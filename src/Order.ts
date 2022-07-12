@@ -4,9 +4,9 @@ import OrderItem from "./OrderItem";
 import Product from "./Product";
 
 export default class Order {
-    items: OrderItem[];
-    cpf: Cpf;
-    coupon?: Coupon;
+    private items: OrderItem[];
+    private cpf: Cpf;
+    private coupon?: Coupon;
     private readonly DISTANCE = 1000;
     private readonly DENSITY_FACTOR = 100;
 
@@ -39,16 +39,22 @@ export default class Order {
     }
 
     checkIfItemWasAdded(itemId: string): boolean {
-        return !!this.items.filter(item => item.product.id === itemId).length;
+        return this.items.some(item => item.product.id === itemId);
     }
 
     calculateFreight(): string {
         let total = this.items.reduce((total, item) => {
+            // TODO - refatorar e criar um metdodo dentro de product pra retornar o volume
+            // para evitar essa cadeia de objetos diferentes chamando objetos
             total += this.DISTANCE * item.product.volumn.getVolumn() * (item.product.getDensity() / this.DENSITY_FACTOR);
             return total;
         }, 0);
 
-        total = total < 10 ? 10 : total;
+        total = Math.max(total, 10);
         return total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).replace(/\s/g, '');
+    }
+
+    getItems(): OrderItem[] {
+        return this.items;
     }
 }

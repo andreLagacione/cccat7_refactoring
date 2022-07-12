@@ -24,7 +24,7 @@ test('Deve adicionar três itens no pedido', () => {
     order.addItem(helmet, 1);
     order.addItem(iceCream, 2);
     order.addItem(coal, 3);
-    expect(order.items.length).toBe(3);
+    expect(order.getItems().length).toBe(3);
     expect(order.getTotal()).toBe(594);
 });
 
@@ -42,7 +42,7 @@ test('Deve adicionar três itens no pedido e adicionar um cupom de desconto vál
     order.addItem(coal, 3);
     const coupon = new Coupon('VALE50', 50, new Date('2022-07-30T23:59:59'));
     order.addCoupon(coupon);
-    expect(order.items.length).toBe(3);
+    expect(order.getItems().length).toBe(3);
     expect(order.getTotal()).toBe(297);
     clock.restore();
 });
@@ -64,7 +64,7 @@ test('Deve retornar erro ao criar o pedido com cupom de desconto inválido', () 
             new Coupon('VALE50', 50, new Date('2022-07-10T23:59:59'))
         )
     ).toThrow(new Error('Cupom expirado'));
-    expect(order.items.length).toBe(3);
+    expect(order.getItems().length).toBe(3);
     expect(order.getTotal()).toBe(594);
     clock.restore();
 });
@@ -76,7 +76,7 @@ test('Deve retornar erro ao adicionar um item com quantidade menos que 1', () =>
     expect(
         () => order.addItem(helmet, -1)
     ).toThrow(new Error('A quantidade deve ser maior ou igual a 1'));
-    expect(order.items.length).toBe(0);
+    expect(order.getItems().length).toBe(0);
     expect(order.getTotal()).toBe(0);
 });
 
@@ -88,7 +88,7 @@ test('Deve retornar erro ao adicionar um item mais de uma vez', () => {
     expect(
         () => order.addItem(helmet, 1)
     ).toThrow(new Error('Este item já foi adicionado'));
-    expect(order.items.length).toBe(1);
+    expect(order.getItems().length).toBe(1);
     expect(order.getTotal()).toBe(500);
 });
 

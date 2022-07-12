@@ -2,27 +2,30 @@ import Cpf from "../src/cpf";
 
 test('Deve testar um CPF e retornar que o CPF é válido', () => {
     const cpf = new Cpf('925.454.250-44');
-    expect(cpf.validate()).toBeTruthy();
+    expect(cpf.getValue()).toBe('925.454.250-44');
 });
 
 test('Deve testar um CPF e retornar que o CPF é inválido', () => {
-    const cpf = new Cpf('925.454.250-45');
-    expect(cpf.validate()).toBeFalsy();
+    expect(
+        () => new Cpf('925.454.250-45')
+    ).toThrow(new Error('CPF inválido'));
 });
 
 test('Deve testar um CPF com o segundo digito inválido e retornar que o CPF é inválido', () => {
-    const cpf = new Cpf('925.454.250-75');
-    expect(cpf.validate()).toBeFalsy();
+    expect(
+        () => new Cpf('925.454.250-75')
+    ).toThrow(new Error('CPF inválido'));
 });
 
 test('Deve testar um CPF que começa com zero e retornar que o CPF é válido', () => {
     const cpf = new Cpf('088.703.860-31');
-    expect(cpf.validate()).toBeTruthy();
+    expect(cpf.getValue()).toBe('088.703.860-31');
 });
 
 test('Deve testar um CPF com quantidade de caractéteres inválida e retornar que o CPF é inválido', () => {
-    const cpf = new Cpf('088.703.860-3');
-    expect(cpf.validate()).toBeFalsy();
+    expect(
+        () => new Cpf('088.703.860-3')
+    ).toThrow(new Error('CPF inválido'));
 });
 
 const defaultCpfs = [
@@ -38,16 +41,12 @@ const defaultCpfs = [
 ];
 
 test.each(defaultCpfs)('Deve testar um CPFs com todos caractéres iguais e retornar que o CPF é inválido', (value: string) => {
-    const cpf = new Cpf(value);
-    expect(cpf.validate()).toBeFalsy();
-});
-
-test('Deve verificar se o CPF obtido é igual ao CPF enviado', () => {
-    const cpf = new Cpf('088.703.860-3');
-    expect(cpf.getValue()).toEqual('088.703.860-3');
+    expect(
+        () => new Cpf(value)
+    ).toThrow(new Error('CPF inválido'));
 });
 
 test('Deve testar o resto da divisão da validação do dígito', () => {
     const cpf = new Cpf('123.456.789-09');
-    expect(cpf.validate()).toBeTruthy();
+    expect(cpf.getValue()).toBe('123.456.789-09');
 });

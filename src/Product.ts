@@ -10,6 +10,8 @@ export default class Product {
     }
 
     getDensity(): number {
-        return Math.floor(this.weight / this.volumn.getVolumn());
+        const volumn = this.volumn.getVolumn();
+        if (volumn === 0) return 0;
+        return Math.floor(this.weight / volumn);
     }
 }
