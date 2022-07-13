@@ -44,9 +44,7 @@ export default class Order {
 
     calculateFreight(): string {
         let total = this.items.reduce((total, item) => {
-            // TODO - refatorar e criar um metdodo dentro de product pra retornar o volume
-            // para evitar essa cadeia de objetos diferentes chamando objetos
-            total += this.DISTANCE * item.product.volumn.getVolumn() * (item.product.getDensity() / this.DENSITY_FACTOR);
+            total += this.DISTANCE * item.product.getVolumn() * (item.product.getDensity() / this.DENSITY_FACTOR);
             return total;
         }, 0);
 

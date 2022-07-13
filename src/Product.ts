@@ -14,4 +14,8 @@ export default class Product {
         if (volumn === 0) return 0;
         return Math.floor(this.weight / volumn);
     }
+
+    getVolumn(): number {
+        return this.volumn.getVolumn();
+    }
 }
