@@ -1,58 +1,57 @@
 
 export default class Cpf {
-  private cpf: string;
+  private value: string;
   DIGIT_1_FACTOR = 10;
-	DIGIT_2_FACTOR = 11;
+  DIGIT_2_FACTOR = 11;
 
   constructor (value: string) {
-    if (!this.validate(value)) throw new Error('CPF inválido');
-    this.cpf = value;
+    if (!this.validate(value)) throw new Error('Cpf Inválido');
+    this.value = value;
   }
 
-  validate(cpf: string): boolean {
+  validate(cpf: string) {
     if (!cpf) return false;
-    cpf = this.normalize(cpf);
-    if (cpf.length !== 11) return false;
-    if (this.allDigitsAreEquals(cpf)) return false;
-    let validateDigit = this.calculateDigit(cpf, this.DIGIT_1_FACTOR);
-    if (!this.isDigitValid(validateDigit, parseInt(cpf[9]))) return false;
-    validateDigit = this.calculateDigit(cpf, this.DIGIT_2_FACTOR);
-    if (!this.isDigitValid(validateDigit, parseInt(cpf[10]))) return false;
-    return true;
+    cpf = this.removeNonDigits(cpf);
+    if (!this.isValidLength(cpf)) return false;
+    if (this.allDigitsTheSame(cpf)) return false;
+    const digit1 = this.calculateDigit(cpf, this.DIGIT_1_FACTOR);
+    const digit2 = this.calculateDigit(cpf, this.DIGIT_2_FACTOR);
+    let checkDigit = this.extractCheckDigit(cpf);
+    const calculatedCheckDigit = `${digit1}${digit2}`;
+    return checkDigit == calculatedCheckDigit;
   }
 
-  private normalize(cpf: string): string {
+  removeNonDigits(cpf: string): string {
     return cpf.replace(/\D+/g, '');
   }
 
-  private allDigitsAreEquals(cpf: string): boolean {
+  isValidLength(cpf: string): boolean {
+    return cpf.length === 11;
+  }
+
+  allDigitsTheSame(cpf: string): boolean {
     const [firstDigit] = cpf;
     return [...cpf].every(digit => digit === firstDigit);
   }
 
-  private calculateDigit(cpf: string, factor: number) {
-    let control = factor;
-    let soma = 0;
-
-    for (let digit of cpf) {
-      if (control > 1) {
-        soma += parseInt(digit) * control;
-        control--;
+  calculateDigit(cpf: string, factor: number): number {
+    let total = 0;
+    for (const digit of cpf) {
+      if (factor > 1) {
+        total += parseInt(digit) * factor--;
       }
     }
-
-    return soma;
+    const rest = total % 11;
+    return (rest < 12) ? 0 : 11 - rest;
   }
 
-  private isDigitValid(sum: number, digit: number) {
-    let rest = (sum * 10) % 11;
-    if (rest === 10 || rest === 11) rest = 0;
-    if (rest === digit) return true;
-    return false;
+  extractCheckDigit(cpf: string): string {
+    return cpf.slice(-2);
   }
-
 
   getValue(): string {
-    return this.cpf;
+    return this.value;
   }
+
+
 }
