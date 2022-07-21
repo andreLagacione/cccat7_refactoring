@@ -1,28 +1,15 @@
-import pgp from 'pg-promise';
-import Dimension from './Dimension';
-import Order from './Order';
+// main
+import CLIManager from "./infra/cli/CLIManager";
+import StdinAdapter from "./infra/cli/StdinAdapter";
+import StdoutAdapter from "./infra/cli/StdoutAdapter";
+import CLIController from "./infra/controller/cli/CLIController";
+import PgPromiseAdpter from "./infra/database/PgPromiseAdapter";
 
-const connection = pgp()('postgress://postgres:123456@localhost:5432/app');
-let cpf = '';
-let orderItems: { idItem: number, quantity: number }[] = [];
+// Frameworks and Drives
+const inputDevice = new StdinAdapter();
+const outputDevice = new StdoutAdapter();
+const connection = new PgPromiseAdpter();
 
-process.stdin.on('data', async (chunk) => {
-    const command = chunk.toString();
-
-    if (command.startsWith('cpf')) {
-        cpf = command.replace('cpf ', '');
-    }
-    if (command.startsWith('add-item')) {
-        const [idItem, quantity] = command.replace('add-item ', '').split(' ');
-        orderItems.push({ idItem: parseInt(idItem), quantity: parseInt(quantity) });
-    }
-    if (command.startsWith('preview')) {
-        const order = new Order(cpf);
-        for (const orderItem of orderItems) {
-            const [itemData] = await connection.query('select * from ccca.item where id_item = $1', [orderItem.idItem]);
-            const item = new itemData(itemData.id_item, itemData.description, parseFloat(itemData.price), new Dimension(itemData.width, itemData.height, itemData.length, itemData.weight));
-            order.addItem(item, orderItem.quantity);
-        }
-        console.log('total: ', order.getTotal());
-    }
-});
+// Interface Adapters
+const cliManager = new CLIManager(inputDevice, outputDevice);
+new CLIController(cliManager, connection);

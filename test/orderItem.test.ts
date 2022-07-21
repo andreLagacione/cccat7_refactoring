@@ -1,4 +1,4 @@
-import OrderItem from "../src/OrderItem";
+import OrderItem from "../src/domain/entities/OrderItem";
 import Product from "../src/Product";
 import ProductVolumn from "../src/ProductVolumn";
 
