@@ -7,7 +7,7 @@ export default class SimulateFreight {
     async execute (input: Input): Promise<Output> {
         let total = 0;
         for (const orderItem of input.orderItems) {
-            const item = await this.itemRespository.getitem(orderItem.iditem);
+            const item = await this.itemRespository.getitem(orderItem.idItem);
             total += FreightCalculator.calculate(item) * orderItem.quantity;
         }
         return { total };
@@ -16,7 +16,7 @@ export default class SimulateFreight {
 
 type Input = {
     orderItems: {
-        iditem: number,
+        idItem: number,
         quantity: number
     }[]
 }

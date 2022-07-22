@@ -1,5 +1,5 @@
 import Sinon from "sinon";
-import Coupon from "../src/domain/entities/Coupon";
+import Coupon from "../../src/domain/entities/Coupon";
 
 test('deve calcular o disconto', () => {
     const clock = Sinon.useFakeTimers({ now: new Date('2022-07-11T10:00:00') });

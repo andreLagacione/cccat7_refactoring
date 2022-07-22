@@ -2,7 +2,7 @@ import Connection from "../../database/Connection";
 import Order from "../../../domain/entities/Order";
 import OrderRespository from "../../../domain/repository/OrderRepository";
 
-export default class ItemRepositoryDatabase implements OrderRespository {
+export default class OrderRepositoryDatabase implements OrderRespository {
 
    // DIP - Dependency Inversion Principle
    constructor(readonly connection: Connection) {}

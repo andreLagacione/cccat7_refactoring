@@ -9,7 +9,7 @@ export default class Checkout {
         const sequence = await this.orderRepository.count() + 1;
         const order = new Order(input.cpf, input.date, sequence);
         for (const orderItem of input.orderItems) {
-            const item = await this.itemRepository.getitem(orderItem.iditem);
+            const item = await this.itemRepository.getitem(orderItem.idItem);
             order.addItem(item, orderItem.quantity);
         }
         await this.orderRepository.save(order);
@@ -25,7 +25,7 @@ type Input = {
     cpf: string;
     date: Date;
     orderItems: {
-        iditem: number,
+        idItem: number,
         quantity: number
     }[]
 }

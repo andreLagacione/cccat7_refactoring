@@ -1,4 +1,4 @@
-import Cpf from "../src/domain/entities/Cpf";
+import Cpf from "../../src/domain/entities/Cpf";
 
 test('Deve testar um CPF e retornar que o CPF é válido', () => {
     const cpf = new Cpf('925.454.250-44');
